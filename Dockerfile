@@ -7,8 +7,9 @@ WORKDIR /data
 ## Step 2:
 # Copy source code to working directory
 COPY README.md /data/
+COPY images /data/images
 COPY www /data/www
-COPY nginx /data/nginx
+COPY nginx /etc/nginx
 
 ## Step 3:
 # Install dependencies (if any)
@@ -23,4 +24,4 @@ EXPOSE 80
 
 ## Step 5:
 # Run nginx at container launch
-CMD ["nginx", "-c=/data/nginx/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]

@@ -2,6 +2,7 @@
 
 sudo apt-get update -y
 
+# install make
 apt-get install -y make
 
 # install tidy
