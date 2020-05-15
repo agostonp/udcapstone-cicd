@@ -3,7 +3,7 @@ Description: >
     Agoston Pajzs
     Udacity Could DevOps Nanodgree
     Capstone project - CI/CD pipeline with Jenkins, Docker and Kubernetes 
-    This CloudFormation template file contains the IAM Role, Network elements and Security Group
+    This CloudFormation template file contains the Network elements including a Security Group required for the Kubernetes cluster (Amazon EKS)
 
 Parameters:
 
@@ -50,24 +50,6 @@ Metadata:
           - PrivateSubnet2CIDR
 
 Resources:
-
-    eksClusterRole:
-        Type: AWS::IAM::Role
-        Properties:
-            AssumeRolePolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                - Effect: Allow
-                  Principal:
-                    Service:
-                    - eks.amazonaws.com
-                  Action:
-                  - sts:AssumeRole
-            ManagedPolicyArns:
-                - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} Amazon EKS Cluster Role
 
     VPC:
         Type: AWS::EC2::VPC
@@ -265,12 +247,6 @@ Resources:
             VpcId: !Ref VPC
 
 Outputs: 
-
-    RoleArn:
-        Description: The role that Amazon EKS will use to create AWS resources for Kubernetes clusters
-        Value: !GetAtt eksClusterRole.Arn
-        Export:
-          Name: !Sub "${EnvironmentName}-EKSRoleArn"
 
     SecurityGroups:
         Description: Security group for the cluster control plane communication with worker nodes
