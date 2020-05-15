@@ -1,6 +1,32 @@
 #!/usr/bin/env bash
-regioncode="eu-central-1"
 
+regioncode="eu-central-1"
+clustername="UDCapstone"
+
+#--------------------------------------------------
+## Crate Kubernetes Cluster in Amazon EKS
+cd infrastructure
+
+# Create the iam roles
+./cfcreate.sh udcapstone-iam ./iam.yml ./environment-params.json
+
+# Create the network elements
+./cfcreate.sh udcapstone-network ./network.yml ./network-params.json
+
+# Create the cluster
+./cfcreate.sh udcapstone-cluster ./kubecluster.yml ./environment-params.json
+
+# Add the new cluster to the kubeconfig file
+aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
+
+kubectl get svc
+
+cd ..
+
+
+
+
+#--------------------------------------------------
 # Create an Amazon EKS cluster with Fargate support
 eksctl version
 eksctl create cluster --name udcapstone --region "eu-central-1" --fargate
