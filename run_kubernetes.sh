@@ -14,7 +14,7 @@ cd infrastructure
 ./cfcreate.sh udcapstone-network ./network.yml ./network-params.json
 
 # Create the cluster
-./cfcreate.sh udcapstone-cluster ./kubecluster.yml ./environment-params.json
+./cfcreate.sh udcapstone-cluster ./kubecluster.yml ./kubecluster-params.json
 
 # Add the new cluster to the kubeconfig file
 aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
