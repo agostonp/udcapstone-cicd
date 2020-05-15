@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+    Agoston Pajzs
+    Udacity Could DevOps Nanodgree
+    Capstone project - CI/CD pipeline with Jenkins, Docker and Kubernetes 
+    This CloudFormation template file contains the creation of the Kubernetes cluster (Amazon EKS)
+
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+Resources:
+    KubeCluster:
+        Type: 'AWS::EKS::Cluster'
+        Properties:
+            Name: ${EnvironmentName}
+            Version: '1.16'
+            RoleArn:
+            - Fn::ImportValue: !Sub "${EnvironmentName}-EKSClusterRoleArn"
+            ResourcesVpcConfig:
+                SecurityGroupIds:
+                - Fn::ImportValue: !Sub "${EnvironmentName}-ControlPlaneSecurityGroup"
+                SubnetIds:
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PRI1-SN"
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PRI2-SN"
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} EKS Cluster
+
