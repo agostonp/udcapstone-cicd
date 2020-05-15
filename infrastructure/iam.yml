@@ -1,9 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-    Agoston Pajzs
-    Udacity Could DevOps Nanodgree
+    Create the IAM Roles required for the Kubernetes cluster (Amazon EKS)
     Capstone project - CI/CD pipeline with Jenkins, Docker and Kubernetes 
-    This CloudFormation template file contains the IAM Roles required for the Kubernetes cluster (Amazon EKS)
+    Udacity Could DevOps Nanodgree
+    Agoston Pajzs
+    CloudFormation template file
 
 Mappings:
     ServicePrincipals:
