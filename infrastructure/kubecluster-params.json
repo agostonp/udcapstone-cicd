@@ -1,0 +1,14 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UDCapstone"
+	},
+	{
+		"ParameterKey": "SshKey",
+		"ParameterValue": "Ago-Frankfurt-keypair"
+	},
+	{
+		"ParameterKey": "MyIPCIDR",
+		"ParameterValue": "84.0.191.90/32"
+	}
+]
