@@ -64,13 +64,13 @@ Resources:
 
 Outputs: 
 
-    RoleArn:
+    eksClusterRole:
         Description: The role that Amazon EKS will use to create AWS resources for Kubernetes clusters
         Value: !GetAtt eksClusterRole.Arn
         Export:
           Name: !Sub "${EnvironmentName}-EKSClusterRoleArn"
 
-    NodeInstanceRole:
+    eksWorkerNodeRole:
         Description: The node instance role
         Value: !GetAtt eksWorkerNodeRole.Arn
         Export:
