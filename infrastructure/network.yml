@@ -241,19 +241,7 @@ Resources:
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
 
-    ControlPlaneSecurityGroup:
-        Type: AWS::EC2::SecurityGroup
-        Properties:
-            GroupDescription: Kubernetes Cluster communication with worker nodes
-            VpcId: !Ref VPC
-
 Outputs: 
-
-    SecurityGroups:
-        Description: Security group for the cluster control plane communication with worker nodes
-        Value: !Join [ ",", [ !Ref ControlPlaneSecurityGroup ] ]
-        Export:
-          Name: !Sub "${EnvironmentName}-ControlPlaneSecurityGroup"
 
     VPC: 
         Description: A reference to the created VPC

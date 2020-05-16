@@ -21,6 +21,14 @@ Parameters:
         Type: String
 
 Resources:
+
+    ControlPlaneSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Kubernetes Cluster communication with worker nodes
+            VpcId: Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+
+
     KubeCluster:
         Type: 'AWS::EKS::Cluster'
         Properties:
@@ -30,12 +38,13 @@ Resources:
                 Fn::ImportValue: !Sub "${EnvironmentName}-EKSClusterRoleArn"
             ResourcesVpcConfig:
                 SecurityGroupIds:
-                - Fn::ImportValue: !Sub "${EnvironmentName}-ControlPlaneSecurityGroup"
+                - !Ref ControlPlaneSecurityGroup
                 SubnetIds:
                 - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
                 - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
                 - Fn::ImportValue: !Sub "${EnvironmentName}-PRI1-SN"
                 - Fn::ImportValue: !Sub "${EnvironmentName}-PRI2-SN"
+
 
     KubeNodesSSHSecGroup:
         Type: AWS::EC2::SecurityGroup
@@ -54,8 +63,41 @@ Resources:
               ToPort: 65535
               CidrIp: 0.0.0.0/0
 
+    KubeNodegroup:
+        Type: 'AWS::EKS::Nodegroup'
+        Properties:
+            ClusterName:
+                !Ref KubeCluster
+            AmiType: AL2_x86_64
+            DiskSize: 10
+            InstanceTypes:
+                - t2.micro
+            NodegroupName: !Sub "${EnvironmentName}-EKSNodegroup"
+            NodeRole: 
+                Fn::ImportValue: !Sub "${EnvironmentName}-EKSWorkerNodeRoleArn"
+            RemoteAccess:
+                Ec2SshKey: !Ref SshKey
+                SourceSecurityGroups:
+                - !Ref KubeNodesSSHSecGroup
+            ScalingConfig:
+                MinSize: 2
+                DesiredSize: 2
+                MaxSize: 2
+            Subnets:
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PRI1-SN"
+                - Fn::ImportValue: !Sub "${EnvironmentName}-PRI2-SN"
+            Labels:
+                Environment: !Ref EnvironmentName
+            Tags:
+                Name: !Sub "${EnvironmentName} Group of Worker Nodes in Cluster"
 
 Outputs: 
+
+    ControlPlaneSecurityGroup:
+        Description: Security group for the cluster control plane communication with worker nodes
+        Value: !Ref ControlPlaneSecurityGroup
+        Export:
+          Name: !Sub "${EnvironmentName}-ControlPlaneSecurityGroup"
 
     KubeCluster: 
         Description: A reference to the created EKSCluster
