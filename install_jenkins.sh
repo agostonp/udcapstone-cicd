@@ -10,29 +10,47 @@ cd infrastructure
 
 # Create the public network elements
 ./cfcreate.sh udcapstone-pub-network ./public-network.yml ./network-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-pub-network
 
 # Create the Jenkins server
-./cfcreate.sh udcapstone-jenkins ./jenkins-sevrer.yml ./environment-params.json
+./cfcreate.sh udcapstone-jenkins ./jenkins-server.yml ./environment-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-jenkins
 
 cd ..
 
 ########################################################
 ## Install needed software on running Jenkins server
 ########################################################
+# 1. Modify the allowed IP address for SSH to your own IP in the SecurityGroup of the Jenkins server
+# 2. Log in to the Jenkins server with ssh
+ssh -i "blablabla\Ago-Frankfurt-keypair.pem" ec2-user@ec2-18-157-116-251.eu-central-1.compute.amazonaws.com
+
+# update all packages
 sudo yum update –y
 
 # install tidy
-wget -O /tmp/libtidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libtidy-5.4.0-1.el7.x86_64.rpm
-sudo rpm -Uvh /tmp/libtidy.x86_64.rpm
-wget -O /tmp/tidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/t/tidy-5.4.0-1.el7.x86_64.rpm
-sudo rpm -Uvh /tmp/tidy.x86_64.rpm
-rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
-#sudo yum install -y tidy
+# wget -O /tmp/libtidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libtidy-5.4.0-1.el7.x86_64.rpm
+# sudo rpm -Uvh /tmp/libtidy.x86_64.rpm
+# wget -O /tmp/tidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/t/tidy-5.4.0-1.el7.x86_64.rpm
+# sudo rpm -Uvh /tmp/tidy.x86_64.rpm
+# rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
+sudo yum install -y tidy
 
 # install hadolint
 sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
 sudo chmod +x /bin/hadolint
 
+# install java 8
+sudo yum install -y java-1.8.0
+sudo yum remove -y java-1.7.0-openjdk
+
+##### Download and install Jenkins, for details see: https://d1.awsstatic.com/Projects/P5505030/aws-project_Jenkins-build-server.pdf
+sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+sudo yum install jenkins -y
+sudo service jenkins start
 
 
 ########################################################
