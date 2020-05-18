@@ -49,7 +49,7 @@ Resources:
     JenkinsEC2Instance: 
         Type: AWS::EC2::Instance
         Properties: 
-            ImageId: ami-076431be05aaf8080
+            ImageId: ami-03ab4e8f1d88ce614
             KeyName: Ago-Frankfurt-keypair
             SecurityGroupIds:
             - Ref: JenkinsServerSecGroup
@@ -60,3 +60,6 @@ Resources:
             - DeviceName: "/dev/sdk"
               Ebs:
                 VolumeSize: '10'
+            Tags: 
+                - Key: Name 
+                  Value: !Sub "${EnvironmentName} Jenkins Server"
