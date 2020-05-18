@@ -31,11 +31,6 @@ ssh -i "blablabla\Ago-Frankfurt-keypair.pem" ec2-user@ec2-18-157-116-251.eu-cent
 sudo yum update –y
 
 # install tidy
-# wget -O /tmp/libtidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libtidy-5.4.0-1.el7.x86_64.rpm
-# sudo rpm -Uvh /tmp/libtidy.x86_64.rpm
-# wget -O /tmp/tidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/t/tidy-5.4.0-1.el7.x86_64.rpm
-# sudo rpm -Uvh /tmp/tidy.x86_64.rpm
-# rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
 sudo yum install -y tidy
 
 # install hadolint
@@ -56,6 +51,13 @@ sudo service jenkins start
 ########################################################
 ### Probably NOT needed commands
 ########################################################
+# install tidy
+# wget -O /tmp/libtidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libtidy-5.4.0-1.el7.x86_64.rpm
+# sudo rpm -Uvh /tmp/libtidy.x86_64.rpm
+# wget -O /tmp/tidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/t/tidy-5.4.0-1.el7.x86_64.rpm
+# sudo rpm -Uvh /tmp/tidy.x86_64.rpm
+# rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
+
 # get the latest version of aws - 1.18.49 is good enough
 pip3 install awscli --upgrade --user
 
