@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-    Network elements and Security Group required for the Kubernetes cluster (Amazon EKS)
+    *PUBLIC* Network elements required for the Jenkins server and for the Kubernetes cluster (Amazon EKS)
     Capstone project - CI/CD pipeline with Jenkins, Docker and Kubernetes 
     Udacity Could DevOps Nanodgree
     Agoston Pajzs
@@ -105,66 +105,6 @@ Resources:
                 - Key: kubernetes.io/role/elb
                   Value: 1
 
-    PrivateSubnet1: 
-        Type: AWS::EC2::Subnet
-        Metadata:
-            Comment: Subnet 03
-        Properties:
-            VpcId: !Ref VPC
-            AvailabilityZone: !Select [ 0, !GetAZs '' ]
-            CidrBlock: !Ref PrivateSubnet1CIDR
-            MapPublicIpOnLaunch: false
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
-                - Key: kubernetes.io/role/internal-elb
-                  Value: 1
-
-    PrivateSubnet2: 
-        Type: AWS::EC2::Subnet
-        Metadata:
-            Comment: Subnet 04
-        Properties:
-            VpcId: !Ref VPC
-            AvailabilityZone: !Select [ 1, !GetAZs '' ]
-            CidrBlock: !Ref PrivateSubnet2CIDR
-            MapPublicIpOnLaunch: false
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
-                - Key: kubernetes.io/role/internal-elb
-                  Value: 1
-    
-    NatGateway1EIP:
-        Type: AWS::EC2::EIP
-        DependsOn: InternetGatewayAttachment
-        Properties: 
-            Domain: vpc
-
-    NatGateway2EIP:
-        Type: AWS::EC2::EIP
-        DependsOn: InternetGatewayAttachment
-        Properties:
-            Domain: vpc
-
-    NatGateway1: 
-        Type: AWS::EC2::NatGateway
-        Properties: 
-            AllocationId: !GetAtt NatGateway1EIP.AllocationId
-            SubnetId: !Ref PublicSubnet1
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} NatGateway1
-
-    NatGateway2: 
-        Type: AWS::EC2::NatGateway
-        Properties:
-            AllocationId: !GetAtt NatGateway2EIP.AllocationId
-            SubnetId: !Ref PublicSubnet2
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} NatGateway2
-
     PublicRouteTable:
         Type: AWS::EC2::RouteTable
         Properties: 
@@ -193,54 +133,6 @@ Resources:
             RouteTableId: !Ref PublicRouteTable
             SubnetId: !Ref PublicSubnet2
 
-    PrivateRouteTable1:
-        Type: AWS::EC2::RouteTable
-        Properties: 
-            VpcId: !Ref VPC
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Routes (AZ1)
-
-    DefaultPrivateRoute1:
-        Type: AWS::EC2::Route
-        DependsOn:
-        - InternetGatewayAttachment
-        - NatGateway1
-        Properties:
-            RouteTableId: !Ref PrivateRouteTable1
-            DestinationCidrBlock: 0.0.0.0/0
-            NatGatewayId: !Ref NatGateway1
-
-    PrivateSubnet1RouteTableAssociation:
-        Type: AWS::EC2::SubnetRouteTableAssociation
-        Properties:
-            RouteTableId: !Ref PrivateRouteTable1
-            SubnetId: !Ref PrivateSubnet1
-
-    PrivateRouteTable2:
-        Type: AWS::EC2::RouteTable
-        Properties: 
-            VpcId: !Ref VPC
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Routes (AZ2)
-
-    DefaultPrivateRoute2:
-        Type: AWS::EC2::Route
-        DependsOn:
-        - InternetGatewayAttachment
-        - NatGateway2
-        Properties:
-            RouteTableId: !Ref PrivateRouteTable2
-            DestinationCidrBlock: 0.0.0.0/0
-            NatGatewayId: !Ref NatGateway2
-
-    PrivateSubnet2RouteTableAssociation:
-        Type: AWS::EC2::SubnetRouteTableAssociation
-        Properties:
-            RouteTableId: !Ref PrivateRouteTable2
-            SubnetId: !Ref PrivateSubnet2
-
 Outputs: 
 
     VPC: 
@@ -255,12 +147,6 @@ Outputs:
         Export:
           Name: !Sub ${EnvironmentName}-PUB-NETS
 
-    PrivateSubnets:
-        Description: A list of the private subnets
-        Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
-        Export:
-          Name: !Sub ${EnvironmentName}-PRIV-NETS
-
     PublicSubnet1:
         Description: A reference to the public subnet in the 1st Availability Zone
         Value: !Ref PublicSubnet1
@@ -272,16 +158,3 @@ Outputs:
         Value: !Ref PublicSubnet2
         Export:
           Name: !Sub ${EnvironmentName}-PUB2-SN
-
-    PrivateSubnet1:
-        Description: A reference to the private subnet in the 1st Availability Zone
-        Value: !Ref PrivateSubnet1
-        Export:
-          Name: !Sub ${EnvironmentName}-PRI1-SN
-
-    PrivateSubnet2: 
-        Description: A reference to the private subnet in the 2nd Availability Zone
-        Value: !Ref PrivateSubnet2
-        Export:
-          Name: !Sub ${EnvironmentName}-PRI2-SN
-

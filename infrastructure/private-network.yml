@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+    *PRIVATE* Network elements required for the Kubernetes cluster (Amazon EKS)
+    Note: The two Network stacks are separated to allow Jenkins development without the private network including the costly NatGateways
+    Capstone project - CI/CD pipeline with Jenkins, Docker and Kubernetes 
+    Udacity Could DevOps Nanodgree
+    Agoston Pajzs
+    CloudFormation template file 
+
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    VpcCIDR: 
+        Description: Please enter the IP range (CIDR notation) for this VPC
+        Type: String
+        Default: 10.0.0.0/16
+
+    PublicSubnet1CIDR: 
+        Description: The IP range (CIDR notation) for this Subnet
+        Type: String
+        Default: 10.0.0.0/16
+
+    PublicSubnet2CIDR: 
+        Description: The IP range (CIDR notation) for this Subnet
+        Type: String
+        Default: 10.0.1.0/16
+
+    PrivateSubnet1CIDR: 
+        Description: The IP range (CIDR notation) for this Subnet
+        Type: String
+        Default: 10.0.2.0/16
+
+    PrivateSubnet2CIDR: 
+        Description: The IP range (CIDR notation) for this Subnet
+        Type: String
+        Default: 10.0.3.0/16
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "Worker Network Configuration"
+        Parameters:
+          - VpcCIDR
+          - PublicSubnet1CIDR
+          - PublicSubnet2CIDR
+          - PrivateSubnet1CIDR
+          - PrivateSubnet2CIDR
+
+Resources:
+
+    PrivateSubnet1: 
+        Type: AWS::EC2::Subnet
+        Metadata:
+            Comment: Subnet 03
+        Properties:
+            VpcId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnet1CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+                - Key: kubernetes.io/role/internal-elb
+                  Value: 1
+
+    PrivateSubnet2: 
+        Type: AWS::EC2::Subnet
+        Metadata:
+            Comment: Subnet 04
+        Properties:
+            VpcId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnet2CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+                - Key: kubernetes.io/role/internal-elb
+                  Value: 1
+    
+    NatGateway1EIP:
+        Type: AWS::EC2::EIP
+        Properties: 
+            Domain: vpc
+
+    NatGateway2EIP:
+        Type: AWS::EC2::EIP
+        Properties:
+            Domain: vpc
+
+    NatGateway1: 
+        Type: AWS::EC2::NatGateway
+        Properties: 
+            AllocationId: !GetAtt NatGateway1EIP.AllocationId
+            SubnetId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} NatGateway1
+
+    NatGateway2: 
+        Type: AWS::EC2::NatGateway
+        Properties:
+            AllocationId: !GetAtt NatGateway2EIP.AllocationId
+            SubnetId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} NatGateway2
+
+    PrivateRouteTable1:
+        Type: AWS::EC2::RouteTable
+        Properties: 
+            VpcId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Routes (AZ1)
+
+    DefaultPrivateRoute1:
+        Type: AWS::EC2::Route
+        DependsOn:
+        - NatGateway1
+        Properties:
+            RouteTableId: !Ref PrivateRouteTable1
+            DestinationCidrBlock: 0.0.0.0/0
+            NatGatewayId: !Ref NatGateway1
+
+    PrivateSubnet1RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PrivateRouteTable1
+            SubnetId: !Ref PrivateSubnet1
+
+    PrivateRouteTable2:
+        Type: AWS::EC2::RouteTable
+        Properties: 
+            VpcId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Routes (AZ2)
+
+    DefaultPrivateRoute2:
+        Type: AWS::EC2::Route
+        DependsOn:
+        - NatGateway2
+        Properties:
+            RouteTableId: !Ref PrivateRouteTable2
+            DestinationCidrBlock: 0.0.0.0/0
+            NatGatewayId: !Ref NatGateway2
+
+    PrivateSubnet2RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PrivateRouteTable2
+            SubnetId: !Ref PrivateSubnet2
+
+Outputs: 
+
+    PrivateSubnets:
+        Description: A list of the private subnets
+        Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-NETS
+
+    PrivateSubnet1:
+        Description: A reference to the private subnet in the 1st Availability Zone
+        Value: !Ref PrivateSubnet1
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI1-SN
+
+    PrivateSubnet2: 
+        Description: A reference to the private subnet in the 2nd Availability Zone
+        Value: !Ref PrivateSubnet2
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI2-SN
+
