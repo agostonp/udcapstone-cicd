@@ -19,14 +19,15 @@ cd ..
 ########################################################
 ## Install needed software on running Jenkins server
 ########################################################
-
-sudo apt-get update -y
-
-# install make
-apt-get install -y make
+sudo yum update –y
 
 # install tidy
-sudo apt-get install -y tidy
+wget -O /tmp/libtidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libtidy-5.4.0-1.el7.x86_64.rpm
+sudo rpm -Uvh /tmp/libtidy.x86_64.rpm
+wget -O /tmp/tidy.x86_64.rpm https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/t/tidy-5.4.0-1.el7.x86_64.rpm
+sudo rpm -Uvh /tmp/tidy.x86_64.rpm
+rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
+#sudo yum install -y tidy
 
 # install hadolint
 sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
