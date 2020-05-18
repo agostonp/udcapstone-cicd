@@ -12,6 +12,11 @@ sudo apt-get install -y tidy
 sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
 sudo chmod +x /bin/hadolint
 
+
+
+########################################################
+### Probably NOT needed commands
+########################################################
 # get the latest version of aws - 1.18.49 is good enough
 pip3 install awscli --upgrade --user
 
