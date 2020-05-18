@@ -1,4 +1,24 @@
 #!/usr/bin/env bash
+# WARNING! Do not run this file as is!
+# This is more a collection of the steps to be done
+exit
+
+########################################################
+## Create Jenkins instance
+########################################################
+cd infrastructure
+
+# Create the public network elements
+./cfcreate.sh udcapstone-pub-network ./public-network.yml ./network-params.json
+
+# Create the Jenkins server
+./cfcreate.sh udcapstone-jenkins ./jenkins-sevrer.yml ./environment-params.json
+
+cd ..
+
+########################################################
+## Install needed software on running Jenkins server
+########################################################
 
 sudo apt-get update -y
 

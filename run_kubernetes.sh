@@ -10,8 +10,8 @@ cd infrastructure
 # Create the iam roles
 ./cfcreate.sh udcapstone-iam ./iam.yml ./environment-params.json
 
-# Create the network elements
-./cfcreate.sh udcapstone-network ./network.yml ./network-params.json
+# Create the private network elements
+./cfcreate.sh udcapstone-pri-network ./private-network.yml ./network-params.json
 
 # Create the cluster
 ./cfcreate.sh udcapstone-cluster ./kubecluster.yml ./kubecluster-params.json
