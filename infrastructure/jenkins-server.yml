@@ -18,7 +18,10 @@ Resources:
         Type: AWS::EC2::EIP
         Properties: 
             Domain: vpc
-    
+            Tags: 
+              - Key: Name 
+                Value: !Sub "${EnvironmentName} Jenkins Server"
+      
     JenkinsEIPAssociation:
         Type: AWS::EC2::EIPAssociation
         Properties:
@@ -45,6 +48,9 @@ Resources:
               FromPort: 0
               ToPort: 65535
               CidrIp: 0.0.0.0/0
+            Tags: 
+            - Key: Name 
+              Value: !Sub "${EnvironmentName} Jenkins Server"
 
     JenkinsEC2Instance: 
         Type: AWS::EC2::Instance
@@ -60,6 +66,40 @@ Resources:
             - DeviceName: "/dev/sdk"
               Ebs:
                 VolumeSize: '10'
+            UserData:
+              Fn::Base64: !Sub |
+                #!/bin/bash -xe
+                exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+                # update all packages
+                yum update -y
+                # install tidy
+                yum install -y tidy
+                # install hadolint
+                wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
+                chmod +x /bin/hadolint
+                # install java 8
+                yum install -y java-1.8.0
+                yum remove -y java-1.7.0-openjdk
+                ##### Download and install Jenkins, for details see: https://d1.awsstatic.com/Projects/P5505030/aws-project_Jenkins-build-server.pdf
+                wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+                rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+                yum install jenkins -y
+                yum update –y
+                service jenkins start
             Tags: 
                 - Key: Name 
                   Value: !Sub "${EnvironmentName} Jenkins Server"
+
+Outputs: 
+
+    JenkinsIP: 
+        Description: Public (Elastic) IP address of the Jenkins Server
+        Value: !Ref JenkinsEIP
+        Export:
+          Name: !Sub ${EnvironmentName}-JenkinsIP
+
+    JenkinsServerSecGroup:
+        Description: The SecurityGroup used to access the Jenkins Server - Change the allowed IP to your own IP!
+        Value: !Ref JenkinsServerSecGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-JenkinsServerSecGroup
