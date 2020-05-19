@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# WARNING! Do not run this file as is!
+# This is a collection of the steps to be done
+exit
 
 regioncode="eu-central-1"
 clustername="UDCapstone"
@@ -9,12 +12,18 @@ cd infrastructure
 
 # Create the iam roles
 ./cfcreate.sh udcapstone-iam ./iam.yml ./environment-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-iam
 
 # Create the private network elements
 ./cfcreate.sh udcapstone-pri-network ./private-network.yml ./network-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-pri-network
 
 # Create the cluster
 ./cfcreate.sh udcapstone-cluster ./kubecluster.yml ./kubecluster-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-cluster
 
 # Add the new cluster to the kubeconfig file
 aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
@@ -22,19 +31,6 @@ aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
 kubectl get svc
 
 cd ..
-
-
-
-
-#--------------------------------------------------
-# Create an Amazon EKS cluster with Fargate support
-eksctl version
-eksctl create cluster --name udcapstone --region "eu-central-1" --fargate
-
-# configure kubectl to use the same IAM Role
-aws --region "eu-central-1" eks update-kubeconfig --name udcapstone --role-arn arn:aws:iam::857339242870:role/eksctl-udcapstone-cluster-FargatePodExecutionRole-1VUQRGJXM8F88
-
-
 
 
 #--------------------------------------------------
