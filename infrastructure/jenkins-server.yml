@@ -100,6 +100,9 @@ Resources:
                 yum install jenkins -y
                 yum update –y
                 service jenkins start
+                # Add users to docker group to allow running docker commands
+                usermod -aG docker ec2-user
+                usermod -aG docker jenkins
             Tags: 
                 - Key: Name 
                   Value: !Sub "${EnvironmentName} Jenkins Server"

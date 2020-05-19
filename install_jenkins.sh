@@ -64,6 +64,13 @@ sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 sudo yum install jenkins -y
 sudo service jenkins start
 
+# Add users to docker group to allow running docker commands
+sudo usermod -aG docker ec2-user
+sudo usermod -aG docker jenkins
+
+# Configure aws cli to have credentials and default region
+aws configure
+
 ########################################################
 ### Configure Jenkins
 ########################################################

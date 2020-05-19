@@ -17,7 +17,6 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh 'echo "USER:$USER"'
                 // Build docker image and add a descriptive tag
                 sh 'docker build --tag="udcapstone-cicd" .'
 
