@@ -25,7 +25,7 @@ cd ..
 ########################################################
 # 1. Modify the allowed IP address for SSH to your own IP in the SecurityGroup of the Jenkins server
 # 2. Log in to the Jenkins server with ssh
-ssh -i "blablabla\Ago-Frankfurt-keypair.pem" ec2-user@ec2-18-157-116-251.eu-central-1.compute.amazonaws.com
+ssh -i "..\Ago-Frankfurt-keypair.pem" ec2-user@ec2-18-195-8-96.eu-central-1.compute.amazonaws.com
 
 # update all packages
 sudo yum update –y
@@ -46,6 +46,18 @@ sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenk
 sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 sudo yum install jenkins -y
 sudo service jenkins start
+
+########################################################
+### Configure Jenkins
+########################################################
+# 1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser
+# 2. Enter the password found in:
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+# 3. Click Install suggested plugins
+# 4. Enter Administrator Credentials,  click Save Credentials,  and then clickStart Using Jenkins
+# 5. Instal plugins: Locale, Blue Ocean Aggregator, pipeline-aws
+
+
 
 
 ########################################################
