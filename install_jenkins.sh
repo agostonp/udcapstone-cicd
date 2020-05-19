@@ -32,14 +32,31 @@ sudo yum update –y
 
 # install tidy
 sudo yum install -y tidy
+tidy --version
 
 # install hadolint
 sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
 sudo chmod +x /bin/hadolint
+hadolint --version
+
+# install git
+sudo yum install -y git
+git version
+
+# install docker
+sudo yum install -y docker
+docker --version
+sudo service docker start
+
+# install kubectl
+sudo curl -o /bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
+sudo chmod +x /bin/kubectl
+kubectl version --short --client
 
 # install java 8
 sudo yum install -y java-1.8.0
 sudo yum remove -y java-1.7.0-openjdk
+java -version
 
 ##### Download and install Jenkins, for details see: https://d1.awsstatic.com/Projects/P5505030/aws-project_Jenkins-build-server.pdf
 sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
@@ -56,6 +73,9 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 # 3. Click Install suggested plugins
 # 4. Enter Administrator Credentials,  click Save Credentials,  and then clickStart Using Jenkins
 # 5. Instal plugins: Locale, Blue Ocean Aggregator, pipeline-aws
+# 6. Create a global credential in Jenkins with kind="AWS Credentials"
+# 7. Create a new pipeline in Blue Ocean, type=GitHub
+# 8. Create access token in GitHub for Jenkins
 
 
 

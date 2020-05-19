@@ -74,12 +74,26 @@ Resources:
                 yum update -y
                 # install tidy
                 yum install -y tidy
+                tidy --version
                 # install hadolint
                 wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
                 chmod +x /bin/hadolint
+                hadolint --version
+                # install git
+                yum install -y git
+                git version
+                # install docker
+                yum install -y docker
+                docker --version
+                service docker start
+                # install kubectl
+                curl -o /bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
+                chmod +x /bin/kubectl
+                kubectl version --short --client
                 # install java 8
                 yum install -y java-1.8.0
                 yum remove -y java-1.7.0-openjdk
+                java -version
                 ##### Download and install Jenkins, for details see: https://d1.awsstatic.com/Projects/P5505030/aws-project_Jenkins-build-server.pdf
                 wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
                 rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
