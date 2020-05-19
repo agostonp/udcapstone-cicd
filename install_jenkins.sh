@@ -74,15 +74,19 @@ aws configure
 ########################################################
 ### Configure Jenkins
 ########################################################
-# 1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser
-# 2. Enter the password found in:
+#  1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser
+#  2. Enter the password found in:
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-# 3. Click Install suggested plugins
-# 4. Enter Administrator Credentials,  click Save Credentials,  and then clickStart Using Jenkins
-# 5. Instal plugins: Locale, Blue Ocean Aggregator, pipeline-aws
-# 6. Create a global credential in Jenkins with kind="AWS Credentials"
-# 7. Create a new pipeline in Blue Ocean, type=GitHub
-# 8. Create access token in GitHub for Jenkins
+#  3. Click Install suggested plugins
+#  4. Enter Administrator Credentials,  click Save Credentials,  and then clickStart Using Jenkins
+#  5. Instal plugins: Locale, Blue Ocean Aggregator, pipeline-aws
+#  6. Create a global credential in Jenkins with kind="AWS Credentials"
+#  7. Create a new pipeline in Blue Ocean, type=GitHub
+#  8. Create access token in GitHub for Jenkins
+#  9. Configure aws cli to have credentials and default region
+aws configure
+# 10. Authenticate Docker to an Amazon ECR registry
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 857339242870.dkr.ecr.eu-central-1.amazonaws.com/udcapstone
 
 
 
