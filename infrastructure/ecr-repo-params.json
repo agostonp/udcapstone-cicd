@@ -1,0 +1,14 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UDCapstone"
+	},
+	{
+		"ParameterKey": "RepoName",
+		"ParameterValue": "udcapstone-cicd"
+	},
+	{
+		"ParameterKey": "AccountId",
+		"ParameterValue": "857339242870"
+	}
+]
