@@ -27,25 +27,25 @@ Resources:
         Properties: 
             RepositoryName: !Ref RepoName
             RepositoryPolicyText: 
-            Version: "2012-10-17"
-            Statement: 
-                - 
-                Sid: AllowPushPull
-                Effect: Allow
-                Principal: 
-                    AWS: 
-                    - !Sub "arn:aws:iam::${AccountId}:user/*"
-                Action: 
-                    - "ecr:GetDownloadUrlForLayer"
-                    - "ecr:BatchGetImage"
-                    - "ecr:BatchCheckLayerAvailability"
-                    - "ecr:PutImage"
-                    - "ecr:InitiateLayerUpload"
-                    - "ecr:UploadLayerPart"
-                    - "ecr:CompleteLayerUpload"
+                Version: "2012-10-17"
+                Statement: 
+                  - Sid: AllowPushPull
+                    Effect: Allow
+                    Principal: 
+                        AWS: 
+                        - !Sub "arn:aws:iam::${AccountId}:user/agostonp"
+                        - !Sub "arn:aws:iam::${AccountId}:root"
+                    Action: 
+                        - "ecr:GetDownloadUrlForLayer"
+                        - "ecr:BatchGetImage"
+                        - "ecr:BatchCheckLayerAvailability"
+                        - "ecr:PutImage"
+                        - "ecr:InitiateLayerUpload"
+                        - "ecr:UploadLayerPart"
+                        - "ecr:CompleteLayerUpload"
             Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} ECR Repository
+              - Key: Name 
+                Value: !Sub ${EnvironmentName} ECR Repository
 
 Outputs: 
 
