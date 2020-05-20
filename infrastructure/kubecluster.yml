@@ -16,10 +16,6 @@ Parameters:
         Description: SSH key to be used to access servers
         Type: String
 
-    MyIPCIDR: 
-        Description: My own local IP address (CIDR notation) to be used to allow SSH to worker nodes
-        Type: String
-
 Resources:
 
     ControlPlaneSecurityGroup:
@@ -49,14 +45,14 @@ Resources:
     KubeNodesSSHSecGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
-            GroupDescription: Allow SSH to Kube (EKS) worker nodes
+            GroupDescription: Allow SSH to Kube (EKS) worker nodes - Change Dummy IP from console!
             VpcId:
                 Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
             SecurityGroupIngress:
             - IpProtocol: tcp
               FromPort: 22
               ToPort: 22
-              CidrIp: !Ref MyIPCIDR
+              CidrIp: 1.2.3.4/32
             SecurityGroupEgress:
             - IpProtocol: tcp
               FromPort: 0
