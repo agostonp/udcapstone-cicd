@@ -34,22 +34,24 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh '''
-                        # Create dockerpath
-                        dockerimage=udcapstone-cicd
-                        repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
-                        echo "Repo path and Docker Image: $repopath"
+                withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
+                    sh '''
+                            # Create dockerpath
+                            dockerimage=udcapstone-cicd
+                            repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
+                            echo "Repo path and Docker Image: $repopath"
 
-                        # Authenticate Docker to my Amazon ECR registry
-                        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $repopath
+                            # Authenticate Docker to my Amazon ECR registry
+                            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $repopath
 
-                        # Tag image with teh repopath
-                        docker tag $dockerimage:latest $repopath:latest
-                        docker image ls $repopath
+                            # Tag image with teh repopath
+                            docker tag $dockerimage:latest $repopath:latest
+                            docker image ls $repopath
 
-                        # Push image to Amazon ECR repository
-                        docker push $repopath:latest
-                   '''
+                            # Push image to Amazon ECR repository
+                            docker push $repopath:latest
+                    '''
+                }
                 // withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
                 //     sh 'echo "Uploading content with AWS creds"'
                 //     s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'ago-jenkins-pipeline')
