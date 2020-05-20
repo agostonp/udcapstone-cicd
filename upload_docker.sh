@@ -1,24 +1,34 @@
 #!/usr/bin/env bash
-# This file tags and uploads an image to Docker Hub
+# This file tags and uploads an image to Amazon ECR
 
-# Assumes that an image is built via `run_docker.sh`
+############################################
+## Create new repository in Amazon ECR
+############################################
+cd infrastructure
 
-# Step 1:
+# Create the repository in Amazon ECR
+./cfcreate.bat udcapstone-ecr-repo ./ecr-repo.yml ./ecr-repo-params.json
+# Wait until stack creation is complete
+aws cloudformation wait stack-create-complete --stack-name udcapstone-ecr-repo
+
+cd ..
+
+
+############################################
+## Push image to Amazon ECR
+############################################
+
 # Create dockerpath
-dockerid="agostonp"
-dockertag="udcapstone-cicd"
-# dockerpath="agostonp/udcapstone-cicd"
-dockerpath=`echo $dockerid"/"$dockertag`
+dockerimage=udcapstone-cicd
+repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
+echo "Repo path and Docker Image: $repopath"
 
-# Step 2:  
-# Authenticate & tag
+# Authenticate Docker to my Amazon ECR registry
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $repopath
 
-# docker login --username=$dockerid #To be run only once
+# Tag image with teh repopath
+docker tag $dockerimage:latest $repopath:latest
+docker image ls $repopath
 
-echo "Docker ID and Image: $dockerpath"
-docker tag $dockertag $dockerpath
-docker image ls $dockerpath
-
-# Step 3:
-# Push image to Docker Hub repository
-docker push $dockerpath
+# Push image to Amazon ECR repository
+docker push $repopath:latest

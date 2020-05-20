@@ -84,11 +84,8 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 #  7. Create a new pipeline in Blue Ocean, type=GitHub
 #  8. Create access token in GitHub for Jenkins
 
-
 #  9. Configure aws cli to have credentials and default region
 aws configure
-# 10. Authenticate Docker to an Amazon ECR registry
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 857339242870.dkr.ecr.eu-central-1.amazonaws.com/udcapstone
 
 
 

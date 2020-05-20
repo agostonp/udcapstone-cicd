@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage("Env Variables") {
+            steps {
+                sh "printenv"
+            }
+        }
         stage('Lint') {
             steps {
                 sh 'tidy -q -e www/*.html'
@@ -30,11 +35,20 @@ pipeline {
             }
             steps {
                 sh '''
-                    dockerimage=udcapstone-cicd:latest
-                    repopath=857339242870.dkr.ecr.us-east-1.amazonaws.com/$dockerimage
-                    echo Repopath:$repopath
-                    docker tag $dockerimage $repopath
-                    docker push $repopath
+                        # Create dockerpath
+                        dockerimage=udcapstone-cicd
+                        repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
+                        echo "Repo path and Docker Image: $repopath"
+
+                        # Authenticate Docker to my Amazon ECR registry
+                        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $repopath
+
+                        # Tag image with teh repopath
+                        docker tag $dockerimage:latest $repopath:latest
+                        docker image ls $repopath
+
+                        # Push image to Amazon ECR repository
+                        docker push $repopath:latest
                    '''
                 // withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
                 //     sh 'echo "Uploading content with AWS creds"'
