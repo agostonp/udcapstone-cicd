@@ -12,7 +12,7 @@ pipeline {
 //                 aquaMicroscanner imageName: 'alpine:latest', notCompleted: 'exit 1', onDisallowed: 'fail'
 //              }
 //         }         
-        stage('Build Docker container') {
+        stage('Build Docker image') {
             when {
                 branch 'master'
             }
@@ -24,12 +24,18 @@ pipeline {
                 sh 'docker image ls udcapstone-cicd'
             }
         }
-        stage('Upload to DockerHub') {
+        stage('Upload to Amazon ECR') {
             when {
                 branch 'master'
             }
             steps {
-                sh 'echo "Upload to DockerHub or Amazon ECR steps come here"'
+                sh '''
+                    dockerimage=udcapstone-cicd:latest
+                    repopath=857339242870.dkr.ecr.us-east-1.amazonaws.com/$dockerimage
+                    echo Repopath:$repopath
+                    docker tag $dockerimage $repopath
+                    docker push $repopath
+                   '''
                 // withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
                 //     sh 'echo "Uploading content with AWS creds"'
                 //     s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'ago-jenkins-pipeline')

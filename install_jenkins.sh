@@ -83,6 +83,8 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 #  6. Create a global credential in Jenkins with kind="AWS Credentials"
 #  7. Create a new pipeline in Blue Ocean, type=GitHub
 #  8. Create access token in GitHub for Jenkins
+
+
 #  9. Configure aws cli to have credentials and default region
 aws configure
 # 10. Authenticate Docker to an Amazon ECR registry
