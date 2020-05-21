@@ -29,10 +29,10 @@ pipeline {
             }
             steps {
                 // Build docker image and add a descriptive tag
-                sh 'docker build --tag="${env.DOCKERIMAGE}" .'
+                sh 'docker build --tag=$DOCKERIMAGE .'
 
                 //List docker images
-                sh 'docker image ls ${env.DOCKERIMAGE}'
+                sh 'docker image ls $DOCKERIMAGE'
             }
         }
         stage('Upload to Amazon ECR') {
@@ -45,17 +45,17 @@ pipeline {
                             # Create dockerpath
                             #dockerimage=udcapstone-cicd
                             #repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
-                            echo "Repo path and Docker Image: ${env.REPOPATH}"
+                            echo "Repo path and Docker Image: $REPOPATH"
 
                             # Authenticate Docker to my Amazon ECR registry
-                            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${env.REPOPATH}
+                            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $REPOPATH
 
                             # Tag image with teh repopath
-                            docker tag ${env.DOCKERIMAGE}:latest ${env.REPOPATH}:${env.BUILD_TAG}
-                            docker image ls ${env.REPOPATH}
+                            docker tag $DOCKERIMAGE:latest $REPOPATH:$BUILD_TAG
+                            docker image ls $REPOPATH
 
                             # Push image to Amazon ECR repository
-                            docker push ${env.REPOPATH}:${env.BUILD_TAG}
+                            docker push $REPOPATH:$BUILD_TAG
                     '''
                 }
             }
