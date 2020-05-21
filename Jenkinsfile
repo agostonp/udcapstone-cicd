@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKERIMAGE = "udcapstone-cicd"
+        REPOPATH = "857339242870.dkr.ecr.eu-central-1.amazonaws.com/${env.DOCKERIMAGE}"
+    }
+
     stages {
         stage("Env Variables") {
             steps {
@@ -23,10 +29,10 @@ pipeline {
             }
             steps {
                 // Build docker image and add a descriptive tag
-                sh 'docker build --tag="udcapstone-cicd" .'
+                sh 'docker build --tag="${env.DOCKERIMAGE}" .'
 
                 //List docker images
-                sh 'docker image ls udcapstone-cicd'
+                sh 'docker image ls ${env.DOCKERIMAGE}'
             }
         }
         stage('Upload to Amazon ECR') {
@@ -37,25 +43,21 @@ pipeline {
                 withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
                     sh '''
                             # Create dockerpath
-                            dockerimage=udcapstone-cicd
-                            repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
-                            echo "Repo path and Docker Image: $repopath"
+                            #dockerimage=udcapstone-cicd
+                            #repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
+                            echo "Repo path and Docker Image: ${env.REPOPATH}"
 
                             # Authenticate Docker to my Amazon ECR registry
-                            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $repopath
+                            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${env.REPOPATH}
 
                             # Tag image with teh repopath
-                            docker tag $dockerimage:latest $repopath:latest
-                            docker image ls $repopath
+                            docker tag ${env.DOCKERIMAGE}:latest ${env.REPOPATH}:${env.BUILD_TAG}
+                            docker image ls ${env.REPOPATH}
 
                             # Push image to Amazon ECR repository
-                            docker push $repopath:latest
+                            docker push ${env.REPOPATH}:${env.BUILD_TAG}
                     '''
                 }
-                // withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
-                //     sh 'echo "Uploading content with AWS creds"'
-                //     s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'ago-jenkins-pipeline')
-                // }
             }
         }
         stage('Deploy for Production') {
