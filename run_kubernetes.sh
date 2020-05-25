@@ -70,7 +70,10 @@ kubectl get service $containername
 ##### Non-initial Deployment - when deployment already exists
 
 # Do rolling update
-kubectl set image deployment/$containername $containername=$repopath:v2
+kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-17
+
+# List kubernetes pods
+kubectl get pods
 
 # To roll back the last deployment
-kubectl rollout undo deployment/$containername
+#kubectl rollout undo deployment/$containername
