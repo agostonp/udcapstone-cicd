@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# WARNING! Do not run this file as is!
-# This is a collection of the steps to be done
+echo 'WARNING! Do not run this file as is!'
+echo 'This is a collection of the steps to be done'
 exit
 
 regioncode="eu-central-1"
@@ -36,31 +36,39 @@ cd ..
 #--------------------------------------------------
 ##### Initial Deployment
 
-# This is your Docker ID/path
-dockerpath="agostonp/udcapstone-cicd"
+# Add variables
+dockerimage=udcapstone-cicd
+repopath=857339242870.dkr.ecr.eu-central-1.amazonaws.com/$dockerimage
+containername=udcapstonedemo
+echo "Repo path and Docker Image: $repopath"
+
+# Add the new cluster to the kubeconfig file
+aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
+
+kubectl get svc
 
 # Run the Docker Hub container with kubernetes
 #kubectl run udcapstonedemo --image="agostonp/udcapstone-cicd" --port=80
-kubectl run udcapstonedemo --image=$dockerpath --port=80 --replicas=2
+kubectl run $containername --image=$repopath --port=80 --replicas=2
 
 # List kubernetes pods
 kubectl get pods
 
 # Forward the container port to a host
 # Listen on port 80 locally, forwarding to 80 in the pod
-kubectl port-forward pod/udcapstonedemo 80:80
+#kubectl port-forward pod/udcapstonedemo 80:80
 
 # A better way of exposing the container to outside
-kubectl expose deployment/udcapstonedemo --type="LoadBalancer" --port=80 --target-port=80 --name=udcapstonedemo
+kubectl expose deployment/$containername --type="LoadBalancer" --port=80 --target-port=80 --name=$containername
 
 # To get the URL of the newly created service
-kubectl get service udcapstonedemo
+kubectl get service $containername
 
 #--------------------------------------------------
 ##### Non-initial Deployment - when deployment already exists
 
 # Do rolling update
-kubectl set image deployment/udcapstonedemo udcapstonedemo=agostonp/udcapstone-cicd:v2
+kubectl set image deployment/$containername $containername=$repopath:v2
 
 # To roll back the last deployment
-kubectl rollout undo deployment/udcapstonedemo
+kubectl rollout undo deployment/$containername
