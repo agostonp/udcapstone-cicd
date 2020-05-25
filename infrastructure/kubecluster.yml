@@ -22,7 +22,8 @@ Resources:
         Type: AWS::EC2::SecurityGroup
         Properties:
             GroupDescription: Kubernetes Cluster communication with worker nodes
-            VpcId: Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+            VpcId:
+                Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
 
 
     KubeCluster:
