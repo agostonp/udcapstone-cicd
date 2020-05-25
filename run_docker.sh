@@ -10,7 +10,7 @@ docker build --tag="udcapstone-cicd" .
 docker image ls
 
 # Start up the webserver in the container
-docker run -it -p 80:80 --rm --name udcapscont "udcapstone-cicd" 
+docker run -it -p 80:8000 --rm --name udcapscont "udcapstone-cicd" 
 
 # To run the base container for development:
 # docker run -it -p 80:80 --rm --name nginxcont "nginx:stable"

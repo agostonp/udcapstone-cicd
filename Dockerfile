@@ -19,8 +19,8 @@ COPY nginx /etc/nginx
 #RUN make install
 
 ## Step 4:
-# Expose port 80
-EXPOSE 80
+# Expose port 8000
+EXPOSE 8000
 
 ## Step 5:
 # Run nginx at container launch

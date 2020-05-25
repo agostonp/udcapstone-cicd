@@ -49,7 +49,7 @@ kubectl get svc
 
 # Run the Docker Hub container with kubernetes
 #kubectl run udcapstonedemo --image="agostonp/udcapstone-cicd" --port=80
-kubectl run $containername --image=$repopath --port=80 --replicas=2
+kubectl run $containername --image=$repopath --port=8000 --replicas=2
 
 # List kubernetes pods
 kubectl get pods
@@ -59,7 +59,7 @@ kubectl get pods
 #kubectl port-forward pod/udcapstonedemo 80:80
 
 # A better way of exposing the container to outside
-kubectl expose deployment/$containername --type="LoadBalancer" --port=80 --target-port=80 --name=$containername
+kubectl expose deployment/$containername --type="LoadBalancer" --port=80 --target-port=8000 --name=$containername
 
 # To get the URL of the newly created service
 kubectl get service $containername
