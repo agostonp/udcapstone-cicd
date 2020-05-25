@@ -63,6 +63,8 @@ kubectl expose deployment/$containername --type="LoadBalancer" --port=80 --targe
 
 # To get the URL of the newly created service
 kubectl get service $containername
+# NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
+# udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
 
 #--------------------------------------------------
 ##### Non-initial Deployment - when deployment already exists
