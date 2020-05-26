@@ -63,7 +63,7 @@ pipeline {
         }
         stage('Deploy for Production') {
             when {
-                branch 'master'
+                branch 'deployment'
             }
             steps {
                 withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
