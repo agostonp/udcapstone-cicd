@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'IMAGETAG', defaultValue: 'latest', description: 'Which image should be deployed? Enter image tag:')
+    }
+
     environment {
         DOCKERIMAGE = "udcapstone-cicd"
         REPOPATH = "857339242870.dkr.ecr.eu-central-1.amazonaws.com/${env.DOCKERIMAGE}"
@@ -80,8 +84,11 @@ pipeline {
                             # Check that our Kubernetes deployment is started
                             kubectl get deployment/$CONTAINERNAME
 
+                            # Image to update to
+                            echo IMAGETAG=$IMAGETAG
+
                             # Do rolling update
-                            kubectl set image deployment/$CONTAINERNAME $CONTAINERNAME=$REPOPATH:$BUILD_TAG
+                            kubectl set image deployment/$CONTAINERNAME $CONTAINERNAME=$REPOPATH:$IMAGETAG
 
                             # See how the pods are replaced
                             for VARIABLE in 1 2 3 4 5
