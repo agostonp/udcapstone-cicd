@@ -7,7 +7,7 @@ regioncode="eu-central-1"
 clustername="UDCapstone"
 
 #--------------------------------------------------
-## Crate Kubernetes Cluster in Amazon EKS
+## Create Kubernetes Cluster in Amazon EKS
 cd infrastructure
 
 # Create the iam roles
@@ -78,9 +78,11 @@ kubectl set image deployment/$containername $containername=$repopath:jenkins-udc
 # List kubernetes pods
 kubectl get pods
 
-# To roll back the last deployment
+# To roll back the last deployment - if needed
 #kubectl rollout undo deployment/$containername
 
-# Cleanup
+#--------------------------------------------------
+##### Cleanup
+
 # kubectl delete services/$containername
 # kubectl delete deployment/$containername
