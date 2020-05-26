@@ -14,6 +14,9 @@ pipeline {
             }
         }
         stage('Lint') {
+            when {
+                branch 'master'
+            }
             steps {
                 sh 'tidy -q -e www/*.html'
                 sh 'hadolint Dockerfile'
@@ -57,35 +60,6 @@ pipeline {
 
                             # Push image to Amazon ECR repository
                             docker push $REPOPATH:$BUILD_TAG
-                    '''
-                }
-            }
-        }
-        stage('Deploy for Production') {
-            when {
-                branch 'deployment'
-            }
-            steps {
-                withAWS(region:'eu-central-1',credentials:'udcapstone-aws-credentials') {
-                    sh '''
-                            # Add the new cluster to the kubeconfig file
-                            aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
-
-                            # Check that the Kubernetes cluster is up and running
-                            kubectl get svc
-
-                            # Check that our Kubernetes deployment is started
-                            kubectl get deployment/$CONTAINERNAME
-
-                            # Do rolling update
-                            kubectl set image deployment/$CONTAINERNAME $CONTAINERNAME=$REPOPATH:$BUILD_TAG
-
-                            # See how the pods are replaced
-                            for VARIABLE in 1 2 3 4 5
-                            do
-                                sleep 2
-                                kubectl get pods
-                            done
                     '''
                 }
             }
