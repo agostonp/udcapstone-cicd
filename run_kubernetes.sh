@@ -48,8 +48,11 @@ aws eks --region "eu-central-1" update-kubeconfig --name UDCapstone
 kubectl get svc
 
 # Run the Docker Hub container with kubernetes
-#kubectl run udcapstonedemo --image="agostonp/udcapstone-cicd" --port=80
-kubectl run $containername --image=$repopath --port=8000 --replicas=2
+#kubectl run udcapstonedemo --image="agostonp/udcapstone-cicd" --port=8000
+
+# Run the Docker container in Amazon ECR with kubernetes
+#kubectl run $containername --image=$repopath:jenkins-udcapstone-cicd-master-21 --port=8000 --replicas=2
+kubectl create -f ./kube-deployment.yml
 
 # List kubernetes pods
 kubectl get pods
@@ -70,10 +73,14 @@ kubectl get service $containername
 ##### Non-initial Deployment - when deployment already exists
 
 # Do rolling update
-kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-17
+kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-22
 
 # List kubernetes pods
 kubectl get pods
 
 # To roll back the last deployment
 #kubectl rollout undo deployment/$containername
+
+# Cleanup
+# kubectl delete services/$containername
+# kubectl delete deployment/$containername

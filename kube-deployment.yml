@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udcapstonedemo
+  namespace: default
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: udcapstonedemo
+  template:
+    metadata:
+      labels:
+        app: udcapstonedemo
+    spec:
+      containers:
+      - image: 857339242870.dkr.ecr.eu-central-1.amazonaws.com/udcapstone-cicd:latest
+        imagePullPolicy: IfNotPresent
+        name: udcapstonedemo
+        ports:
+        - containerPort: 8000
+          protocol: TCP
