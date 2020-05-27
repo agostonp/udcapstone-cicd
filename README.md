@@ -11,12 +11,27 @@ Set up a Continuous Integration and a Continuous Deployment pipeline in Jenkins.
 As an example application I am using a static website deployed in nginx.
 The application is built by Jenkins, packed as a Docker container, uploaded to an Amazon ECR container repository and then deployed into a high availability Amazon EKS Kubernetes cluster.
 The infrastructure is set up from scripts using CloudFormation template files for the VPC, public and private subnets, the Jenkins server (EC2 instance), the container repository and the Kubernetes cluster.
-The entire infrastructure can be recreated from zero using the scripts and instructions in this GitHub repo in less than 60 minutes.
+**The entire infrastructure can be recreated from zero using the scripts and instructions in this GitHub repo in less than 60 minutes.**
 The application built and deployed could be extended without major changes in the integration and deployment framework.
 
-### Project Tasks
+## Technology Used
 
-The project goal was to operationalize this working, machine learning microservice using [kubernetes](https://kubernetes.io/), which is an open-source system for automating the management of containerized applications.
+The followings are demonstrated as part of the solution:
+* **[nginx](https://nginx.org/en/docs/) web server** used as a docker image, I configured it in [nginx\nginx.conf](https://github.com/agostonp/udcapstone-cicd/blob/master/nginx/nginx.conf)
+* **[Docker](https://docs.docker.com/) container** I built my own Docker image on top of the nginx official image using a [Dockerfile](https://github.com/agostonp/udcapstone-cicd/blob/master/Dockerfile) and commands of the docker cli as shown in [run_docker.sh](https://github.com/agostonp/udcapstone-cicd/blob/master/run_docker.sh)
+* **[AWS - Amazon Web Services](https://aws.amazon.com)** The entire solution runs in the Amazon cloud, including the networking ([Amazon VPC](https://aws.amazon.com/vpc/)) the Jenkins server ([EC2 instance](https://aws.amazon.com/ec2/)), the Docker container registry ([Amazon ECR](https://aws.amazon.com/ecr/)) and the Kubernetes service ([Amazon EKS](https://aws.amazon.com/eks/))
+* **Infrastucture as Code using [AWS CloudFormation](https://aws.amazon.com/cloudformation/)** The entire infrastructure is defined in CloudFormation template files - i.e. as scripts and it can be recreated from scratch on an empty AWS account. See the [infrastructure folder](https://github.com/agostonp/udcapstone-cicd/tree/master/infrastructure).
+    * **Networking** The scripts  [private-network.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/private-network.yml) and [public-network.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/public-network.yml) create all network elements: VPC, public and private subnets, gateways. This network is used by both the build server and the production environment.
+    * **Jenkins server** The script [jenkins-server.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/jenkins-server.yml) creates the server instance and installs all required software automatically. It also defines an Elastic IP (to make IP fixed) and SecurityGroup (to block unwanted access)
+    * **Container repository** The script [ecr-repo.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/ecr-repo.yml) creates the Amazon Elastic Container Repository to store the Dokcer images of the sample application and also governs access with a repositry policy
+    * **Kubernetes cluster** The script [kubecluster.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/kubecluster.yml) creates the "production" Kubernetes cluster, its worker node group and required security groups
+
+TODO:
+* **Install and configure a Jenkins server** runs on Amazon Linux, installed components, configuration steps...
+* **Git and GitHub**
+
+
+
 The following tasks were performed:
 * Test project code using linting
 * Complete a Dockerfile to containerize this application
