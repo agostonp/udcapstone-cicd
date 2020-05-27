@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-echo 'WARNING! Do not run this file as is!'
-echo 'This is a collection of the steps to be done'
+echo 'WARNING! I suggest not to run this file as is at first!'
+echo 'Run step by step and confirm success after every step'
 exit
 
 regioncode="eu-central-1"
@@ -54,8 +54,13 @@ kubectl get svc
 #kubectl run $containername --image=$repopath:jenkins-udcapstone-cicd-master-21 --port=8000 --replicas=2
 kubectl create -f ./kube-deployment.yml
 
-# List kubernetes pods
-kubectl get pods
+# Wait until the pods are created and reach running state
+for VARIABLE in 1 2 3 4 5
+do
+    sleep 10
+    # List kubernetes pods and see their status
+    kubectl get pods
+done
 
 # Forward the container port to a host
 # Listen on port 80 locally, forwarding to 80 in the pod
@@ -73,10 +78,10 @@ kubectl get service $containername
 ##### Non-initial Deployment - when deployment already exists
 
 # Do rolling update
-kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-22
+#kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-22
 
 # List kubernetes pods
-kubectl get pods
+#kubectl get pods
 
 # To roll back the last deployment - if needed
 #kubectl rollout undo deployment/$containername

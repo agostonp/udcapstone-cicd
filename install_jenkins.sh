@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# WARNING! Do not run this file as is!
-# This is more a collection of the steps to be done
+echo 'WARNING! I suggest not to run this file as is at first!'
+echo 'Run step by step and confirm success after every step'
 exit
 
 ########################################################
@@ -20,9 +20,14 @@ aws cloudformation wait stack-create-complete --stack-name udcapstone-jenkins
 
 cd ..
 
+exit
+# WARNING NOTE: the below section is already done as part of the UserData commands in the jenkins-server.yml
+# No need to run manually
+
 ########################################################
 ## Install needed software on running Jenkins server
 ########################################################
+
 # 1. Modify the allowed IP address for SSH to your own IP in the SecurityGroup of the Jenkins server
 # 2. Log in to the Jenkins server with ssh
 ssh -i "..\Ago-Frankfurt-keypair.pem" ec2-user@ec2-18-195-8-96.eu-central-1.compute.amazonaws.com
@@ -75,10 +80,10 @@ aws configure
 ### Configure Jenkins
 ########################################################
 #  1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser
-#  2. Enter the password found in:
+#  2. Enter the password found on the server in:
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 #  3. Click Install suggested plugins
-#  4. Enter Administrator Credentials,  click Save Credentials,  and then clickStart Using Jenkins
+#  4. Enter Administrator Credentials,  click Save Credentials, and then click Start Using Jenkins
 #  5. Instal plugins: Locale, Blue Ocean Aggregator, pipeline-aws
 #  6. Create a global credential in Jenkins with kind="AWS Credentials"
 #  7. Create a new pipeline in Blue Ocean, type=GitHub
@@ -101,18 +106,18 @@ aws configure
 # rm /tmp/libtidy.x86_64.rpm /tmp/tidy.x86_64.rpm
 
 # get the latest version of aws - 1.18.49 is good enough
-pip3 install awscli --upgrade --user
+#pip3 install awscli --upgrade --user
 
 # Install aws-iam-authenticator
-sudo curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
-sudo chmod +x aws-iam-authenticator
-sudo mv aws-iam-authenticator /usr/local/bin/
-aws-iam-authenticator version
+#sudo curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
+#sudo chmod +x aws-iam-authenticator
+#sudo mv aws-iam-authenticator /usr/local/bin/
+#aws-iam-authenticator version
 
 # install eksctl
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin
-eksctl version
+#curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+#sudo mv /tmp/eksctl /usr/local/bin
+#eksctl version
 
 # verify that kubectl is installed
-kubectl version --short --client
+#kubectl version --short --client

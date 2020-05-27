@@ -22,51 +22,43 @@ The followings are demonstrated as part of the solution:
 * **[AWS - Amazon Web Services](https://aws.amazon.com)** The entire solution runs in the Amazon cloud, including the networking ([Amazon VPC](https://aws.amazon.com/vpc/)) the Jenkins server ([EC2 instance](https://aws.amazon.com/ec2/)), the Docker container registry ([Amazon ECR](https://aws.amazon.com/ecr/)) and the Kubernetes service ([Amazon EKS](https://aws.amazon.com/eks/))
 * **Infrastucture as Code using [AWS CloudFormation](https://aws.amazon.com/cloudformation/)** The entire infrastructure is defined in CloudFormation template files - i.e. as scripts and it can be recreated from scratch on an empty AWS account. See the [infrastructure folder](https://github.com/agostonp/udcapstone-cicd/tree/master/infrastructure).
     * **Networking** The scripts  [private-network.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/private-network.yml) and [public-network.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/public-network.yml) create all network elements: VPC, public and private subnets, gateways. This network is used by both the build server and the production environment.
+    * **Access Management** The script [iam.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/iam.yml) creates the [IAM](https://aws.amazon.com/iam/) roles needed to use the Kubernetes cluster
     * **Jenkins server** The script [jenkins-server.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/jenkins-server.yml) creates the server instance and installs all required software automatically. It also defines an Elastic IP (to make IP fixed) and SecurityGroup (to block unwanted access)
     * **Container repository** The script [ecr-repo.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/ecr-repo.yml) creates the Amazon Elastic Container Repository to store the Dokcer images of the sample application and also governs access with a repositry policy
     * **Kubernetes cluster** The script [kubecluster.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/infrastructure/kubecluster.yml) creates the "production" Kubernetes cluster, its worker node group and required security groups
+* **Deploy a container in Kubernetes** I configured and used kubectl command line tool to deploy my Docker containerized sample application in a Kubernetes cluster. Commands can be found in [run_kubernetes.sh](https://github.com/agostonp/udcapstone-cicd/blob/master/run_kubernetes.sh), section 'Initial Deployment'. I used a Kubernetes manifest file ([kube-deployment.yml](https://github.com/agostonp/udcapstone-cicd/blob/master/kube-deployment.yml)) and the uploaded Docker image of the application.
+(The manifest file was needed only to change the rollingUpdate parameters. Otherwise a kubectl create command would have been enough.)
+I used Amazon's Docker container registry ([Amazon ECR](https://aws.amazon.com/ecr/)) and Kubernetes service ([Amazon EKS](https://aws.amazon.com/eks/))
+* **Install and configure a Jenkins server** The [install_jenkins.sh](https://github.com/agostonp/udcapstone-cicd/blob/master/install_jenkins.sh) script contains the steps to automatically provision an EC2 instance and install Jenkins and all required other software on the new server.
+The script also contains the manual steps needed to configure Jenkins after it is installed.
+The EC2 runs Amazon Linux, the script installs: tidy, hadolint, git, docker cli, kubectl cli, Java 8 and Jenkins
 
 TODO:
-* **Install and configure a Jenkins server** runs on Amazon Linux, installed components, configuration steps...
+* **Using a Jenkins pipeline** - Blue Ocean, Jenkinsfiles, two piplines on two branches, linting, build docker image, upload docker image - deploy to Kubernetes
+* **Rolling deployment** - in Jenkins or in Kubernetes section - or separate section?
+* **Host a stateless web application**
 * **Git and GitHub**
-
-
-
-The following tasks were performed:
-* Test project code using linting
-* Complete a Dockerfile to containerize this application
-* Deploy containerized application using Docker and make a prediction
-* Improve the log statements in the source code for this application
-* Configure Kubernetes and create a Kubernetes cluster
-* Deploy a container using Kubernetes and make a prediction
-* Upload a complete Github repo with CircleCI to indicate that the code has been tested
 
 
 ---
 
-## Setup the Environment
+## How to use?
 
-* Create a virtualenv and activate it
-* Run `make install` to install the necessary dependencies
+### Prerequisites
+aws account
+aws cli configured - can be in a Cloud9 environment inside AWS
+GitHub account
+git configured
 
-### Running `app.py`
+### Preparation - have your own copy!
+Clone the GitHub repo - to have your own copy of it in GitHub - not enough to clone with git, as Jenkins needs the GitHub repo.
+Replace AWS account id in all files from 857339242870 to your own account id
 
-1. Standalone:  `python app.py`
-2. Run in Docker:  `./run_docker.sh`
-3. Upload to Docker Hub: `./upload_docker.sh`
-4. Run in Kubernetes:  `./run_kubernetes.sh`
-5. Simple client to test the perdiction service: `./make_prediction.sh`
+### Set up the infrastructure
 
-### Kubernetes Steps
+### Running the build in Jenkins
 
-* Setup and Configure Docker locally
-* Setup and Configure Kubernetes locally
-* Create Flask app in Container
-* Run via kubectl
+### Deploy to production using Jenkins
 
-### Other files in the repository
+### Access the deployed web application
 
-* .circleci/config.yml: build configuration for the cloud native continuous integration tool that is used for the validation of the project code
-* model_data directory: `sklearn` model that has been trained to predict housing prices in Boston
-* output_txt_files directory: sample out logs from a docker and a kubernetes run
-* app.py: the main script containing the boilerplate code to execute the predictions in the model
