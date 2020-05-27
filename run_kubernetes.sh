@@ -6,8 +6,10 @@ exit
 regioncode="eu-central-1"
 clustername="UDCapstone"
 
-#--------------------------------------------------
+############################################
 ## Create Kubernetes Cluster in Amazon EKS
+############################################
+
 cd infrastructure
 
 # Create the iam roles
@@ -33,8 +35,9 @@ kubectl get svc
 cd ..
 
 
-#--------------------------------------------------
+############################################
 ##### Initial Deployment
+############################################
 
 # Add variables
 dockerimage=udcapstone-cicd
@@ -74,8 +77,10 @@ kubectl get service $containername
 # NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
 # udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
 
-#--------------------------------------------------
+
+############################################
 ##### Non-initial Deployment - when deployment already exists
+############################################
 
 # Do rolling update
 #kubectl set image deployment/$containername $containername=$repopath:jenkins-udcapstone-cicd-master-22

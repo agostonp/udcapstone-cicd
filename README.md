@@ -14,7 +14,7 @@ The infrastructure is set up from scripts using CloudFormation template files fo
 **The entire infrastructure can be recreated from zero using the scripts and instructions in this GitHub repo in less than 60 minutes.**  
 The application built and deployed could be extended without major changes in the integration and deployment framework.
 
-## Technology Used
+## Technology
 
 The followings are demonstrated as part of the solution:
 
@@ -74,20 +74,54 @@ Git and GitHub was used to provide version control during the development
 ## How to use?
 
 ### Prerequisites
-aws account
-aws cli configured - can be in a Cloud9 environment inside AWS
-GitHub account
-git configured
+
+* Have your own [AWS Account](https://portal.aws.amazon.com/billing/signup)
+* Install and Configure [aws-cli](https://aws.amazon.com/cli/) on your client computer (or you can use an [AWS Cloud9](https://aws.amazon.com/cloud9/) environment)
+* Have your own [GitHub account](https://github.com/join)
+* Install and Configure [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on your client computer (or you can use an [AWS Cloud9](https://aws.amazon.com/cloud9/) environment)
+* Understand how to use [git](https://www.udacity.com/course/version-control-with-git--ud123) and [GitHub](https://guides.github.com/activities/hello-world/)
 
 ### Preparation - have your own copy!
-Clone the GitHub repo - to have your own copy of it in GitHub - not enough to clone with git, as Jenkins needs the GitHub repo.
-Replace AWS account id in all files from 857339242870 to your own account id
+
+* Clone this [GitHub repo](https://github.com/agostonp/udcapstone-cicd) to have your own copy of it in GitHub. It is not enough to clone to local folder with git, as Jenkins needs the GitHub repo
+* Replace AWS Account id in all files (in your own GitHub repo) from 857339242870 to your own AWS Account id
 
 ### Set up the infrastructure
 
+#### 1. Install and Configure Jenkins
+
+1. Run the commands in: `install_jenkins.sh`, section `Create Jenkins instance`  
+NOTE: this also creates the public part of the network
+2. Do the manual Jenkins configuration steps in `install_jenkins.sh`, section `Configure Jenkins`
+
+#### 2. Create container repository in Amazon ECR 
+
+Run the commands in: `upload_docker.sh`, section `Create new repository in Amazon ECR`  
+
+#### 3. Upload the first Docker image in the container
+
+Before clicking on the Jenkins build, I suggest to first test manually that everything works fine.  
+This step is also useful to have a first image uploaded, so you can do the initial deployment to Kubernetes.
+
+Do the followings in a terminal on the Jenkins server:
+1. Build the image: run the commands in `run_docker.sh`
+2. Check the page from your browser  
+If all went well and your SecurityGroups allow the server to be accessible from outside through port 80, you should be able to see the index.html from the browser of your computer. In the browser, use the `Public DNS (IPv4)` of your EC2 instance as address.
+3. Upload the image: run the commands in `upload_docker.sh`, section `Push image to Amazon ECR`  
+
+#### 4. Create the Kubernetes Cluster and worker node group
+
+Run the commands in: `run_kubernetes.sh`, section `Create Kubernetes Cluster in Amazon EKS`  
+NOTE: This takes more than 15 minutes to complete.
+
+#### 5. Deploy the first container in the Kubernetes Cluster
+
+1. Run the commands in: `run_kubernetes.sh`, section `Initial Deployment`  
+2. At this point you should be able to see the webpage running in the "production" environment. Follow steps in `Access the deployed web application` below.
+
 ### Running the build in Jenkins
 
-### Deploy to production using Jenkins
+### Deploy an update to production using Jenkins
 
 ### Access the deployed web application
 

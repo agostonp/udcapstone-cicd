@@ -14,4 +14,4 @@ docker run -it -p 80:8000 --rm --name udcapscont "udcapstone-cicd"
 
 # To run the base container for development:
 # docker run -it -p 80:80 --rm --name nginxcont "nginx:stable"
-nginx -c /etc/nginx/nginx.conf
+#nginx -c /etc/nginx/nginx.conf
