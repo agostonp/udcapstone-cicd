@@ -117,6 +117,7 @@ NOTE: This takes more than 15 minutes to complete.
 #### 5. Deploy the first container in the Kubernetes Cluster
 
 1. Run the commands in: `run_kubernetes.sh`, section `Initial Deployment`  
+NOTE: make sure that the tag of the uploaded image in Amazon ECR and in the `kube-deployment.yml` file are the same  
 2. At this point you should be able to see the webpage running in the "production" environment. Follow steps in `Access the deployed web application` below.
 
 ### Running the build in Jenkins
