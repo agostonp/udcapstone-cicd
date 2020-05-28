@@ -11,8 +11,6 @@ COPY images /data/images
 COPY www /data/www
 COPY nginx /etc/nginx
 
-make_hadolint-fail ?:$;
-
 ## Step 3:
 # Install dependencies (if any)
 # hadolint ignore=DL3013
