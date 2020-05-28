@@ -79,7 +79,7 @@ aws configure
 ########################################################
 ### Configure Jenkins
 ########################################################
-#  1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser
+#  1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser (See EC2 / Instances / Description tab)
 #  2. Enter the password found on the server in:
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 #  3. Click Install suggested plugins

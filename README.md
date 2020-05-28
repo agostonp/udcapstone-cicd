@@ -120,9 +120,39 @@ NOTE: This takes more than 15 minutes to complete.
 NOTE: make sure that the tag of the uploaded image in Amazon ECR and in the `kube-deployment.yml` file are the same  
 2. At this point you should be able to see the webpage running in the "production" environment. Follow steps in `Access the deployed web application` below.
 
-### Running the build in Jenkins
+### 6. Running the build in Jenkins
 
-### Deploy an update to production using Jenkins
+1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser (See EC2 / Instances / Description tab)
+2. Log in to Jenkins, click `Open Blue Ocean` in the left side bar
+3. Click `Pipelines`, select `udcapstone-cicd`, select `Branches`
+4. Next to the **master** branch: click the Play icon (Run tooltip) 
+5. Click on `master` to see the build logs
 
-### Access the deployed web application
+### 7. Deploy an update to production using Jenkins
+
+Prerequisite:
+* The initial deployment has to be done before this step, see "5. Deploy the first container in the Kubernetes Cluster"
+* A new build has to be done before this step, see "6. Running the build in Jenkins"
+* If you want to see any change after the deployment, then modify the [www\index.html](https://github.com/agostonp/udcapstone-cicd/blob/master/www/index.html) file, then commit and push to GitHub, and then do the build
+
+Steps:
+1. Connect to http://<your_server_public_DNS>:8080 from your favorite browser (See EC2 / Instances / Description tab)
+2. Log in to Jenkins, click `Open Blue Ocean` in the left side bar
+3. Click `Pipelines`, select `udcapstone-cicd`, select `Branches`
+4. Next to the **deployment** branch: click the Play icon (Run tooltip) 
+5. Provide the "Build Tag" of the master build that you want to deploy. Similar to this: jenkins-udcapstone-cicd-master-27
+5. Click on `deployment` to see the build logs
+
+### 8. Access the deployed web application
+
+Prerequisite:
+* The initial deployment has to be done before this step, see "5. Deploy the first container in the Kubernetes Cluster"
+
+1. To get the URL of the newly created service, run this command (e.g. from a terminal on the Jenkins server)
+    kubectl get service "udcapstonedemo"
+The result should look like this:
+    # NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
+    # udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
+2. Type the `EXTERNAL-IP` in your browser  
+Result: The webpage should appear with an image of a harbor and a "Hello Udacity..." text.
 
