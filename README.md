@@ -155,8 +155,8 @@ Steps:
 
 The result should look like this:
 
-    \# NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
-    \# udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
+    # NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
+    # udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
 
 2. Type the `EXTERNAL-IP` in your browser  
 Result: The webpage should appear with an image of a harbor and a "Hello Udacity..." text.
