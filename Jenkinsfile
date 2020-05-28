@@ -34,6 +34,11 @@ pipeline {
                             # Check that our Kubernetes deployment is started
                             kubectl get deployment/$CONTAINERNAME
 
+                            # Pods before update
+                            kubectl get pods
+                            kubectl describe pods | grep "Image:"
+
+
                             # Image to update to
                             echo IMAGETAG=$IMAGETAG
 
@@ -43,8 +48,9 @@ pipeline {
                             # See how the pods are replaced
                             for VARIABLE in 1 2 3 4 5
                             do
-                                sleep 2
+                                sleep 20
                                 kubectl get pods
+                                kubectl describe pods | grep "Image:"
                             done
                     '''
                 }
