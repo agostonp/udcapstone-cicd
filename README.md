@@ -149,9 +149,9 @@ Prerequisite:
 * The initial deployment has to be done before this step, see "5. Deploy the first container in the Kubernetes Cluster"
 
 Steps:
-1. To get the URL of the newly created service, run this command (e.g. from a terminal on the Jenkins server)
+1. To get the URL of the newly created service, run this command (e.g. from a terminal on the Jenkins server)  
     kubectl get service "udcapstonedemo"  
-The result should look like this:
+The result should look like this:  
     \# NAME             TYPE           CLUSTER-IP    EXTERNAL-IP                                                                  PORT(S)        AGE
     \# udcapstonedemo   LoadBalancer   172.20.89.0   a04541a653190440ba76e2851e899985-2062291876.eu-central-1.elb.amazonaws.com   80:32329/TCP   7s
 2. Type the `EXTERNAL-IP` in your browser  
